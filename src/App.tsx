@@ -109,4 +109,24 @@ function BigOPlayground(){
  return <Layout><main className="page"><button className="back" onClick={()=>location.href=appPath("/dashboard")}>← Dashboard</button><div className="page-title"><span className="eyebrow">COMPLEXITY EXPLORER</span><h1>Big-O Complexity Playground</h1><p>Change input size and compare illustrative operation counts for common growth rates.</p></div><section className="panel controls"><label>Input size n <strong>{n}</strong><input type="range" min="1" max="100" value={n} onChange={e=>setN(Number(e.target.value))}/><small>Move the slider to see how growth changes.</small></label><div><strong>Input size: {n}</strong><p className="muted">Values are illustrative, not measured runtime.</p></div></section><section className="panel"><h2>Relative growth at n = {n}</h2><div className="big-o-list">{rows.map(([notation,label,fn])=><div className="big-o-row" key={notation}><div className="big-o-label"><strong>{notation}</strong><span>{label}</span></div><div className="big-o-track"><i style={{width:`${Math.max(2,fn(n)/max*100)}%`}}/></div><strong className="big-o-value">{Math.round(fn(n)).toLocaleString()}</strong></div>)}</div><p className="muted">Each bar is scaled against the largest value for the selected n. Real algorithms also depend on constants, input distribution, and implementation.</p></section><section className="stats-grid">{[["Fast growth","O(1), O(log n)"],["Proportional growth","O(n)"],["Higher growth","O(n log n)"],["Rapid growth","O(n²)"]].map(([a,b])=><div className="stat" key={a}><span>{a}</span><strong>{b}</strong></div>)}</section><div className="actions"><button className="primary" onClick={()=>{const p=getProgress();p.modules={...(p.modules||{}),bigo:true};localStorage.setItem("codeviz-progress",JSON.stringify(p));location.href=appPath("/progress")}}>Mark explored & view progress →</button><a className="button-link" href={appPath("/compare")}>Compare algorithms →</a></div></main></Layout>
 }
 
-function App(){const path=location.hash.slice(1)||"/";if(path==="/dashboard")return <Dashboard/>;if(path==="/algorithm")return <Algorithm/>;if(path==="/memory")return <Memory/>;if(path==="/git-learning")return <GitLearning/>;if(path==="/git")return <Git/>;if(path==="/practice")return <Practice/>;if(path==="/progress")return <Progress/>;if(path==="/compare")return <ComplexityCompare/>;if(path==="/quiz")return <DSAQuiz/>;if(path==="/big-o")return <BigOPlayground/>;if(path==="/code-explorer")return <CodeExplorer/>;return <Home/>}export default App;
+function App(){
+  const [path,setPath]=useState(()=>location.hash.slice(1)||"/");
+  useEffect(()=>{
+    const handleHashChange=()=>setPath(location.hash.slice(1)||"/");
+    window.addEventListener("hashchange",handleHashChange);
+    return ()=>window.removeEventListener("hashchange",handleHashChange);
+  },[]);
+  if(path==="/dashboard")return <Dashboard/>;
+  if(path==="/algorithm")return <Algorithm/>;
+  if(path==="/memory")return <Memory/>;
+  if(path==="/git-learning")return <GitLearning/>;
+  if(path==="/git")return <Git/>;
+  if(path==="/practice")return <Practice/>;
+  if(path==="/progress")return <Progress/>;
+  if(path==="/compare")return <ComplexityCompare/>;
+  if(path==="/quiz")return <DSAQuiz/>;
+  if(path==="/big-o")return <BigOPlayground/>;
+  if(path==="/code-explorer")return <CodeExplorer/>;
+  return <Home/>;
+}
+export default App;
